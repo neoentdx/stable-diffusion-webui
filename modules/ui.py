@@ -330,7 +330,7 @@ def create_toprow(is_img2img):
 
             with gr.Row(elem_id=f"{id_part}_styles_row"):
                 prompt_styles = gr.Dropdown(label="Styles", elem_id=f"{id_part}_styles", choices=[k for k, v in shared.prompt_styles.styles.items()], value=[], multiselect=True)
-                create_refresh_button(prompt_styles, shared.prompt_styles.reload, lambda: {"choices": [k for k, v in shared.prompt_styles.styles.items()]}, f"refresh_{id_part}_styles")
+                create_refresh_button(prompt_styles, shared.prompt_styles.reload, lambda: {"choices": [k for k, v in shared.prompt_styles.styles.items()]}, f"refresh_{id_part}_styles")      
 
     return prompt, prompt_styles, negative_prompt, submit, button_interrogate, button_deepbooru, prompt_style_apply, save_style, paste, extra_networks_button, token_counter, token_button, negative_token_counter, negative_token_button, restore_progress_button
 
@@ -373,7 +373,7 @@ def apply_setting(key, value):
 
 
 def create_output_panel(tabname, outdir):
-    return ui_common.create_output_panel(tabname, outdir)
+    return ui_common.create_output_panel(tabname, outdir, True) # simple hide
 
 
 def create_sampler_and_steps_selection(choices, tabname):
@@ -638,6 +638,13 @@ def create_ui():
                 (hr_prompts_container, lambda d: gr.update(visible=True) if d.get("Hires prompt", "") != "" or d.get("Hires negative prompt", "") != "" else gr.update()),
                 *modules.scripts.scripts_txt2img.infotext_fields
             ]
+
+            sampler_index.visible = False          
+            steps.visible = False          
+            width.visible = False
+            height.visible = False
+            cfg_scale.visible = False 
+            
             parameters_copypaste.add_paste_fields("txt2img", None, txt2img_paste_fields, override_settings)
             parameters_copypaste.register_paste_params_button(parameters_copypaste.ParamBinding(
                 paste_button=txt2img_paste, tabname="txt2img", source_text_component=txt2img_prompt, source_image_component=None,
@@ -1476,7 +1483,7 @@ def create_ui():
         with gr.Row(elem_id='logo_row', theme=gr.themes.Default(primary_hue="red", secondary_hue="pink")):
             logo = gr.Image(value="./scripts/neoentdx-logo.png",show_label=False, elem_id="logo_neoentdx").style(height=80)
         
-        settings.add_quicksettings()
+        settings.add_quicksettings(isHide = True) # simple hide
 
         parameters_copypaste.connect_paste_params_buttons()
 

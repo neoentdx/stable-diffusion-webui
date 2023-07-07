@@ -216,8 +216,7 @@ Requested path was: {f}
                     paste_button=paste_button, tabname=paste_tabname, source_tabname="txt2img" if tabname == "txt2img" else None, source_image_component=result_gallery,
                     paste_field_names=paste_field_names
                 ))
-                
-            postInterface.visible = not isHide
+            postInterface.visible = not isHide # simple hide
             return result_gallery, generation_info if tabname != "extras" else html_info_x, html_info, html_log
 
 

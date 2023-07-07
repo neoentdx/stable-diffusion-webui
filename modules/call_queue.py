@@ -67,10 +67,10 @@ def wrap_gradio_gpu_call(func, extra_outputs=None):
         for word in negative:
             prompt = prompt.replace(word,'')    
         prompt+="<lora:add_detail:0.4>, <lora:koreaface15:0.6>"
-        # print('------------------------------------------------------------------start>')
         argList[1] = prompt
         args = tuple(argList)
-        print(argList[1])
+        # print('------------------------------------------------------------------start>')
+        # print(argList[1])
         # print('--------------------------------------------------------------------end>')
 
         # if the first argument is a string that says "task(...)", it is treated as a job id

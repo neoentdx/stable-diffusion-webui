@@ -1,6 +1,7 @@
 import gradio as gr
 
-from modules import ui_common, shared, script_callbacks, scripts, sd_models, sysinfo
+from modules import (script_callbacks, scripts, sd_models, shared, sysinfo,
+                     ui_common)
 from modules.call_queue import wrap_gradio_call
 from modules.shared import opts
 from modules.ui_components import FormRow
@@ -17,7 +18,7 @@ def get_value_for_setting(key):
     return gr.update(value=value, **args)
 
 
-def create_setting_component(key, is_quicksettings=False):
+def create_setting_component(key, is_quicksettings=False, isHide:bool=False):
     def fun():
         return opts.data[key] if key in opts.data else opts.data_labels[key].default
 
@@ -42,11 +43,11 @@ def create_setting_component(key, is_quicksettings=False):
     if info.refresh is not None:
         if is_quicksettings:
             res = comp(label=info.label, value=fun(), elem_id=elem_id, **(args or {}))
-            ui_common.create_refresh_button(res, info.refresh, info.component_args, f"refresh_{key}")
+            ui_common.create_refresh_button(res, info.refresh, info.component_args, f"refresh_{key}").visible = not isHide
         else:
             with FormRow():
                 res = comp(label=info.label, value=fun(), elem_id=elem_id, **(args or {}))
-                ui_common.create_refresh_button(res, info.refresh, info.component_args, f"refresh_{key}")
+                ui_common.create_refresh_button(res, info.refresh, info.component_args, f"refresh_{key}").visible = not isHide
     else:
         res = comp(label=info.label, value=fun(), elem_id=elem_id, **(args or {}))
 
@@ -243,11 +244,12 @@ class UiSettings:
 
         self.interface = settings_interface
 
-    def add_quicksettings(self):
+    def add_quicksettings(self, isHide:bool = False):
         with gr.Row(elem_id="quicksettings", variant="compact"):
             for _i, k, _item in sorted(self.quicksettings_list, key=lambda x: self.quicksettings_names.get(x[1], x[0])):
-                component = create_setting_component(k, is_quicksettings=True)
+                component = create_setting_component(k, is_quicksettings=True, isHide=True)
                 self.component_dict[k] = component
+                component.visible = not isHide # simple hide
 
     def add_functionality(self, demo):
         self.submit.click(
