@@ -5,6 +5,14 @@ function set_theme(theme) {
     if (!gradioURL.includes('?__theme=')) {
         window.location.replace(gradioURL + '?__theme=' + theme);
     }
+
+    setTimeout(() => {
+        logo = document.getElementById('logo_neoentdx');
+        logo.children[2].style.visibility = 'hidden';
+        logo.children[3].style.backgroundColor = '#c00000';
+        console.log('set_theme');
+        console.log(logo.children);
+    }, 1100);
 }
 
 function all_gallery_buttons() {
