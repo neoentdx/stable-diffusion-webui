@@ -416,6 +416,15 @@ def webui():
 
         startup_timer.record("gradio launch")
 
+        # save url & pid
+        f = open("public_url.txt", "w")
+        pid:str = str(os.getpid())
+        share_url = "none" if share_url==None else share_url
+        f.write(share_url + "__" + pid)
+        f.close()
+
+        print("SavedURL: " + share_url + "/?__theme=dark")  
+
         # gradio uses a very open CORS policy via app.user_middleware, which makes it possible for
         # an attacker to trick the user into opening a malicious HTML page, which makes a request to the
         # running web ui and do whatever the attacker wants, including installing an extension and
