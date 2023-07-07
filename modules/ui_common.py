@@ -1,17 +1,16 @@
-import json
 import html
+import json
 import os
 import platform
+import subprocess as sp
 import sys
 
 import gradio as gr
-import subprocess as sp
 
+import modules.images
 from modules import call_queue, shared
 from modules.generation_parameters_copypaste import image_from_url_text
-import modules.images
 from modules.ui_components import ToolButton
-
 
 folder_symbol = '\U0001f4c2'  # 📂
 refresh_symbol = '\U0001f504'  # 🔄
@@ -103,9 +102,9 @@ def save_files(js_data, images, do_make_zip, index):
     return gr.File.update(value=fullfns, visible=True), plaintext_to_html(f"Saved: {filenames[0]}")
 
 
-def create_output_panel(tabname, outdir):
-    from modules import shared
+def create_output_panel(tabname, outdir, isHide:bool = False):
     import modules.generation_parameters_copypaste as parameters_copypaste
+    from modules import shared
 
     def open_folder(f):
         if not os.path.exists(f):
@@ -136,7 +135,7 @@ Requested path was: {f}
             result_gallery = gr.Gallery(label='Output', show_label=False, elem_id=f"{tabname}_gallery").style(columns=4)
 
         generation_info = None
-        with gr.Column():
+        with gr.Column() as postInterface:
             with gr.Row(elem_id=f"image_buttons_{tabname}", elem_classes="image-buttons"):
                 open_folder_button = gr.Button(folder_symbol, visible=not shared.cmd_opts.hide_ui_dir_config)
 
@@ -217,7 +216,8 @@ Requested path was: {f}
                     paste_button=paste_button, tabname=paste_tabname, source_tabname="txt2img" if tabname == "txt2img" else None, source_image_component=result_gallery,
                     paste_field_names=paste_field_names
                 ))
-
+                
+            postInterface.visible = not isHide
             return result_gallery, generation_info if tabname != "extras" else html_info_x, html_info, html_log
 
 
