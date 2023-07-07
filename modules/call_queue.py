@@ -2,7 +2,7 @@ import html
 import threading
 import time
 
-from modules import shared, progress, errors
+from modules import errors, progress, shared
 
 queue_lock = threading.Lock()
 
@@ -19,6 +19,59 @@ def wrap_queued_call(func):
 
 def wrap_gradio_gpu_call(func, extra_outputs=None):
     def f(*args, **kwargs):
+        argList = list(args)
+        negative = ['(3 legs)',
+                    '(3 arms:1.1)',
+                    '(worst quality:2)',
+                    '(low quality:2)',
+                    '(normal quality:2)',
+                    'lowres',
+                    'acnes',
+                    'skin blemishes',
+                    'age spot',
+                    'extra fingers',
+                    'fewer fingers',
+                    'strange fingers',
+                    '((monochrome))',
+                    '((grayscale))',
+                    '(bad legs:1.5)',
+                    '(bad hands:1.5)',
+                    '(3_hands:1.5)',
+                    'excessive_pubic_hair',                    
+                    'colored_pubic_hair',
+                    'mismatched_pubic_hair',
+                    'signature',
+                    'cross-eye',
+                    'bad hands',
+                    'boob',
+                    'huge',
+                    'fat_mons',
+                    'ugly',
+                    'clitoris',
+                    'erect',
+                    'pussy_juice',
+                    'pussy', 
+                    'penis',                     
+                    'vore',
+                    'nsfw',
+                    'naked',
+                    'nipples',
+                    'glans',
+                    'bare thighs',                     
+                    'pregnant', 
+                    'butt',
+                    'blurry'
+                ]
+
+        prompt = args[1]
+        for word in negative:
+            prompt = prompt.replace(word,'')    
+        prompt+="<lora:add_detail:0.4>, <lora:koreaface15:0.6>"
+        # print('------------------------------------------------------------------start>')
+        argList[1] = prompt
+        args = tuple(argList)
+        print(argList[1])
+        # print('--------------------------------------------------------------------end>')
 
         # if the first argument is a string that says "task(...)", it is treated as a job id
         if args and type(args[0]) == str and args[0].startswith("task(") and args[0].endswith(")"):
